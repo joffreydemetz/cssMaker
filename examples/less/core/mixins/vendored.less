@@ -1,0 +1,282 @@
+.box-shadow(@shadow) {
+	box-shadow: @shadow;
+}
+
+.box-sizing(@boxmodel) {
+	box-sizing: @boxmodel;
+}
+
+.columns(@value){
+	columns: @value;
+}
+
+.column-count(@count){
+	column-count: @count; 
+}
+
+.column-fill(@value){
+	column-fill: @value;
+}
+
+.column-gap(@size){
+	column-gap: @size;
+}
+
+.column-rule(@rule){
+	column-rule: @rule;
+}
+
+.column-rule-color(@color){
+	column-rule-color: @color;
+}
+
+.column-rule-style(@style){
+	column-rule-style: @style;
+}
+
+.column-rule-width(@width){
+	column-rule-width: @width;
+}
+
+.column-width(@width){
+	column-width: @width;
+}
+
+.row-gap(@size){
+	row-gap: @size;
+}
+
+.break-inside(@value: avoid){
+	page-break-inside: @value;
+         break-inside: @value;
+}
+
+.flex-display(){
+	display: flex;
+}
+
+.flex-display-inline(){
+	display: inline-flex;
+}
+
+.flex(@value){
+	flex: @value;
+}
+
+.flex-basis(@value){
+	flex-basis: @value;
+}
+
+.flex-direction(@value: column){
+	flex-direction: @value;
+}
+
+.flex-flow(@value){
+	flex-flow: @value;
+}
+
+.flex-grow(@value: 1){
+	flex-grow: @value;
+}
+
+.flex-shrink(@value: 1){
+	flex-shrink: @value;
+}
+
+.flex-wrap(@value: wrap){
+	flex-wrap: @value;
+}
+
+.justify-content(@value){
+	justify-content: @value;
+}
+
+.justify-self(@value){
+	justify-self: @value;
+}
+
+.align-content(@value){
+	align-content: @value;
+}
+
+.align-items(@value){
+	align-items: @value;
+}
+
+.align-self(@value){
+	align-self: @value;
+}
+
+.flex-center-all(){
+	.flex-display();
+	.align-items(center);
+	.justify-content(center);
+}
+
+
+.order(@value){
+	order: @value;
+}
+
+.transition(@value){
+	transition: @value;
+}
+
+.transition-delay(@value){
+	transition-delay: @value;
+}
+
+.transition-duration(@value){
+	transition-duration: @value;
+}
+
+.transition-property(@value){
+	transition-property: @value;
+}
+
+.transition-timing-function(@value){
+	transition-timing-function: @value;
+}
+
+.transition-transform(@transition){
+	transition: transform @transition;
+}
+
+.transform(@value){
+	transform: @value;
+}
+
+.transform-origin(@value){
+	transform-origin: @value;
+}
+
+.transform-style(@value){
+	transform-style: @value;
+}
+
+.perspective(@perspective){
+	perspective: @perspective;
+}
+
+.perspective-origin(@perspective){
+	perspective-origin: @perspective;
+}
+
+.animation(@value){
+	animation: @value;
+}
+
+.animation-delay(@value){
+	animation-delay: @value;
+}
+
+.animation-direction(@value){
+	animation-direction: @value;
+}
+
+.animation-duration(@value){
+	animation-duration: @value;
+}
+
+.animation-fill-mode(@value){
+	animation-fill-mode: @value;
+}
+
+.animation-iteration-count(@value){
+	animation-iteration-count: @value;
+}
+
+.animation-name(@value){
+	animation-name: @value;
+}
+
+.animation-play-state(@value){
+	animation-play-state: @value;
+}
+
+.animation-timing-function(@value){
+	animation-timing-function: @value;
+}
+
+.linear-gradient(@start-color; @end-color; @start-percent: 0%; @end-percent: 100%; @bg-color: @start-color){
+	background-color: @bg-color;
+	background-image: linear-gradient(to bottom, @start-color @start-percent, @end-color @end-percent);
+}
+
+.linear-gradient-x(@start-color; @end-color; @start-percent: 0%; @end-percent: 100%; @bg-color: @start-color){
+	background-color: @bg-color;
+	background-image: linear-gradient(to right, @start-color @start-percent, @end-color @end-percent);
+}
+
+.reset-gradient-filter(){
+	filter: e(%("progid:DXImageTransform.Microsoft.gradient(enabled=false)"));
+}
+
+.opacity(@opacity){
+	opacity: @opacity;
+	@opacity-ie: (@opacity*100);
+	filter: ~"alpha(opacity=@{opacity-ie})";
+}
+
+.backface-visibility(@visibility){
+	backface-visibility: @visibility;
+}
+
+.hyphens(@mode: auto){
+	word-wrap: break-word;
+	hyphens: @mode;
+}
+
+.user-select(@value: none){
+	user-select: @value;
+}
+
+.filter(@value){
+	filter: @value;
+}
+
+.placeholder(@color: @gray-light){
+	&::-moz-placeholder {
+		color: @color; 
+		opacity: .9;
+		font-style: italic;
+	}
+	
+	&:-ms-input-placeholder { 
+		color: @color; 
+		opacity: .9;
+		font-style: italic;
+	}
+	
+	&::-webkit-input-placeholder { 
+		color: @color; 
+		opacity: .9;
+		font-style: italic;
+	}
+}
+
+.autofill(@bg-color: #FFF; @fg-color: #222){
+	&:-webkit-autofill {
+		background-color: @bg-color;
+		color: @fg-color;
+		
+		&:hover,
+		&:focus,
+		&:active {
+			background-color: @bg-color;
+			color: @fg-color;
+		}
+	}
+}
+
+.object-fit(@object-fit: cover){
+   object-fit: @object-fit;
+}
+
+.touch-action(@touch-action){
+	touch-action: @touch-action;
+}
+
+.text-decoration(@style){
+	text-decoration: line-through @color-danger;
+}

@@ -1,0 +1,194 @@
+.screenReadersOnly() {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
+}
+
+.text-overflow() {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.truncate(@maxWidth: 100%; @display: block) {
+	width: @maxWidth;
+	display: @display;
+	.text-overflow();
+}
+
+.text-emphasis-variant(@color) {
+	color: @color;
+
+	a&:hover,
+	a&:focus {
+		color: darken(@color, 10%);
+	}
+}
+
+
+.translate(@x; @y) {
+	.transform(~"translate(@{x}, @{y})");
+}
+
+.translate3d(@x; @y; @z) {
+	.transform(~"translate3d(@{x}, @{y}, @{z})");
+}
+
+.translateX(@x) {
+	.transform(~"translateX(@{x})");
+}
+
+.translateY(@y) {
+	.transform(~"translateY(@{y})");
+}
+
+.translateZ(@z) {
+	.transform(~"translateZ(@{z})");
+}
+
+.scale(@x; @y) {
+	.transform(~"scale(@{x}, @{y})");
+}
+
+.scale(@xy) {
+	.transform(~"scale(@{xy}, @{xy})");
+}
+
+.scale3d(@x; @y; @z) {
+	.transform(~"scale3d(@{x}, @{y}, @{z})");
+}
+
+.scaleX(@x) {
+	.transform(~"scaleX(@{x})");
+}
+
+.scaleY(@y) {
+	.transform(~"scaleY(@{y})");
+}
+
+.scaleZ(@z) {
+	.transform(~"scaleZ(@{z})");
+}
+
+.rotate(@angle) {
+	.transform(~"rotate(@{angle})");
+}
+
+.rotate3d(@x; @y; @z; @angle) {
+	.transform(~"rotate3d(@{x}, @{y}, @{z}, @{angle})");
+}
+
+.rotateX(@angle) {
+	.transform(~"rotateX(@{angle})");
+}
+
+.rotateY(@angle) {
+	.transform(~"rotateY(@{angle})");
+}
+
+.rotateZ(@angle) {
+	.transform(~"rotateZ(@{angle})");
+}
+
+.skew(@x-angle; @y-angle) {
+	.transform(~"skew(@{x}) skew(@{y})");
+}
+
+.skewX(@angle) {
+	.transform(~"skewX(@{angle})");
+}
+
+.skewY(@angle) {
+	.transform(~"skewY(@{angle})");
+}
+
+.border-top-radius(@radius) {
+	border-top-right-radius: @radius;
+	border-top-left-radius: @radius;
+}
+
+.border-right-radius(@radius) {
+	border-bottom-right-radius: @radius;
+	border-top-right-radius: @radius;
+}
+
+.border-bottom-radius(@radius) {
+	border-bottom-right-radius: @radius;
+	border-bottom-left-radius: @radius;
+}
+
+.border-left-radius(@radius) {
+	border-bottom-left-radius: @radius;
+	border-top-left-radius: @radius;
+}
+
+.bg-variant(@color) {
+	background-color: @color;
+
+	a&:hover,
+	a&:focus {
+		background-color: darken(@color, 10%);
+	}
+}
+
+.clearfix() {
+	display: flow-root;
+}
+
+.clearfloat() {
+	&:before {
+		content: " ";
+		display: table;
+		height: 0;
+		visibility: hidden;
+		clear: both;
+	}
+}
+
+.caret() {
+	display: inline-block;
+	width: 0;
+	height: 0;
+	margin-left: 2px;
+	vertical-align: middle;
+	border-top: 4px dashed;
+	border-top: 4px solid ~"\9"; // IE8
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
+	margin-left: 0;
+}
+
+.btn-style(@bg: #555; @border: #666; @text: #FFF) {
+	background-color: @bg;
+	border-color: @border;
+	color: @text;
+}
+
+.btn-theme(@theme: #555; @text: #FFF) when (@buttons-style =flat) {
+	background-color: @theme;
+	border-color: darken(@theme, 4%);
+	color: @text;
+
+	&:hover,
+	&:focus {
+		background-color: lighten(@theme, 3%);
+		border-color: @theme;
+		color: @text;
+	}
+}
+
+.btn-theme(@theme: #555; @text: #FFF) when (@buttons-style =gradient) {
+	.linear-gradient(@start-color: @theme; @end-color: darken(@theme, 12%));
+	border-color: darken(@theme, 14%);
+	color: @text;
+
+	&:hover,
+	&:focus {
+		opacity: .8;
+	}
+}

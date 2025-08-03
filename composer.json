@@ -1,0 +1,59 @@
+{
+    "name": "jdz/cssmaker",
+    "type": "library",
+    "description": "Build minified css file from less sources",
+    "keywords": [
+        "less2css",
+        "less2c",
+        "stylesheet merger",
+        "css maker"
+    ],
+    "homepage": "https://jdz.joffreydemetz.com/cssmaker/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joffrey Demetz",
+            "email": "joffrey.demetz@gmail.com",
+            "homepage": "https://joffreydemetz.com",
+            "role": "Lead"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "jdz/data": "^1.0",
+        "symfony/yaml": "^7.2",
+        "symfony/process": "^7.2"
+    },
+    "require-dev": {
+        "jdz/fontmanager": "^1.0",
+        "phpunit/phpunit": "^10.0"
+    },
+    "suggest": {
+        "jdz/fontmanager": "To manage local fonts and fontfaces"
+    },
+    "autoload": {
+        "psr-4": {
+            "JDZ\\CssMaker\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JDZ\\CssMaker\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "npm": [
+            "npm install -g less less-plugin-clean-css less-plugin-autoprefix",
+            "npm install -g postcss postcss-cli postcss-autoprefixer postcss-less-parser postcss-safe-parser postcss-discard-comments",
+            "npm install -g css-minify"
+        ],
+        "post-update-cmd": "@npm",
+        "post-install-cmd": "@npm",
+        "test": [
+            "phpunit"
+        ],
+        "example": [
+            "php examples/example.php"
+        ]
+    }
+}

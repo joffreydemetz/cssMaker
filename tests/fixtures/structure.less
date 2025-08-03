@@ -1,0 +1,35 @@
+/* Structure styles for testing */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 @padding-base;
+}
+
+.header {
+    background: @primary-color;
+    color: white;
+    padding: @padding-base;
+    .border-radius(@border-radius-base);
+}
+
+.footer {
+    background: @secondary-color;
+    color: white;
+    padding: @padding-base;
+    text-align: center;
+    margin-top: @margin-base;
+}
+
+.button {
+    display: inline-block;
+    padding: @padding-base;
+    background: @primary-color;
+    color: white;
+    text-decoration: none;
+    .border-radius(@border-radius-base);
+    .transition(all 0.3s ease);
+
+    &:hover {
+        background: darken(@primary-color, 10%);
+    }
+}

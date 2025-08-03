@@ -1,0 +1,105 @@
+.icons(@font-family){
+	display: inline-block;
+	font-family: @font-family;
+	font-style: normal !important;
+	font-weight: normal !important;
+	line-height: 1 !important;
+	font-variant: normal !important;
+	text-transform: none !important;
+	speak: none;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icons-block(@font-family){
+	.icons(@font-family);
+	
+	&:before {
+		display: inline-block;
+	}
+}
+
+.icon(@type, @key, @char){
+	@selector: ~'@{type}-@{key}';
+	@content: ~'"\@{char}"';
+	
+	&.@{selector} {
+		&:before {
+			content: @content;
+		}
+	}
+}
+
+.icon-content(@char){
+	@content: ~'"\@{char}"';
+	
+	&:before {
+		content: @content;
+	}
+}
+
+.icons-sizes(){
+	&.x05 {
+		font-size: 50%;
+	}
+	
+	&.x2 {
+		font-size: 200%;
+	}
+	
+	&.x3 {
+		font-size: 300%;
+	}
+	
+	&.x4 {
+		font-size: 400%;
+	}
+	
+	&.x5 {
+		font-size: 500%;
+	}
+}
+
+.icons-light(){
+	&.light {
+		&:before {
+			color: #f2f2f2
+		}
+	}
+}
+
+.icons-drop(){
+	&.drop {
+		&:before {
+			text-shadow: -1px 1px 3px rgba(0,0,0,0.3);
+		}	
+	}
+}
+
+.icons-flip(){
+	&.flip {
+		.scaleX(-1);
+		filter: FlipH;
+		-ms-filter: "FlipH";
+	}
+	
+	&.flipv {
+		.scaleY(-1);
+		filter: FlipV;
+		-ms-filter: "FlipV";
+	}
+}
+
+.icons-rotate(){
+	&.rotate90 {
+		.transform(90deg);
+	}
+	
+	&.rotate180 {
+		.transform(180deg);
+	}
+	
+	&.rotate270 {
+		.transform(270deg);
+	}
+}

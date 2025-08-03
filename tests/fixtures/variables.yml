@@ -1,0 +1,26 @@
+# Test Variables
+primary-color: "#007bff"
+secondary-color: "#6c757d"
+success-color: "#28a745"
+danger-color: "#dc3545"
+warning-color: "#ffc107"
+info-color: "#17a2b8"
+
+# Typography
+font-family-sans: '"Helvetica Neue", Arial, sans-serif'
+font-family-mono: 'Monaco, "Courier New", monospace'
+font-size-base: "14px"
+line-height-base: 1.5
+
+# Spacing
+padding-base: "15px"
+margin-base: "15px"
+
+# Borders
+border-radius-base: "4px"
+border-width-base: "1px"
+
+# Breakpoints
+screen-sm: "768px"
+screen-md: "992px"
+screen-lg: "1200px"

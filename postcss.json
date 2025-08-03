@@ -1,0 +1,12 @@
+{
+    "use": [
+        "autoprefixer",
+        "postcss-discard-comments",
+        "postcss-safe-parser"
+    ],
+    "remove": true,
+    "add": true,
+    "autoprefixer": {
+        "browsers": "> .5%, last 2 versions, not dead"
+    }
+}

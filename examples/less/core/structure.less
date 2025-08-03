@@ -1,0 +1,341 @@
+html {
+	position: relative;
+	min-height: 100vh;
+	font-size: 100%;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+	font-size: .9em;
+	line-height: 1.388888;
+	overflow-x: hidden;
+}
+
+hr {
+	margin-top: 18px;
+	margin-bottom: 18px;
+	border-width: 1px 0 0 0;
+	border-color: @gray-lighter;
+}
+
+.container {
+	margin-right: auto;
+	margin-left: auto;
+	padding-left: 15px;
+	padding-right: 15px;
+	max-width: 100vw;
+}
+
+.clearfix {
+	.clearfix();
+}
+
+.clearfloat {
+	.clearfloat();
+}
+
+.pull-right {
+	float: right !important;
+}
+
+.pull-left {
+	float: left !important;
+}
+
+.hidden {
+	display: none !important;
+}
+
+.show {
+	display: block !important;
+}
+
+.invisible {
+	visibility: hidden;
+}
+
+p+ul:not([class='']) {
+	margin-top: 4px;
+}
+
+.fade {
+	opacity: 0;
+	.transition(opacity .15s linear);
+
+	&.in {
+		opacity: 1;
+	}
+}
+
+figure {
+	margin: 0;
+
+	figcaption {
+		max-width: 500px;
+		margin: 0 auto;
+		.user-select(none);
+	}
+}
+
+.sr-only {
+	.screenReadersOnly();
+}
+
+// Contextual backgrounds & texts
+.bg-primary {
+	// Given the contrast here, this is the only class to have its color inverted
+	// automatically.
+	color: #fff;
+	.bg-variant(@color-primary);
+}
+
+.bg-success {
+	.bg-variant(@color-success);
+}
+
+.bg-info {
+	.bg-variant(@color-info);
+}
+
+.bg-warning {
+	.bg-variant(@color-warning);
+}
+
+.bg-danger {
+	.bg-variant(@color-danger);
+}
+
+.text-primary {
+	.text-emphasis-variant(@color-primary);
+}
+
+.text-success {
+	.text-emphasis-variant(@color-success);
+}
+
+.text-info {
+	.text-emphasis-variant(@color-info);
+}
+
+.text-warning {
+	.text-emphasis-variant(@color-warning);
+}
+
+.text-danger {
+	.text-emphasis-variant(@color-danger);
+}
+
+a[href^="mailto:"],
+a[href^="tel:"] {
+	white-space: nowrap;
+}
+
+a,
+button {
+
+	&.focus,
+	&:focus {
+		// WebKit-specific. Other browsers will keep their default outline style.
+		// (Initially tried to also force default via `outline: initial`,
+		// but that seems to erroneously remove the outline in Firefox altogether.)
+		// outline: 5px auto -webkit-focus-ring-color;
+		// outline-offset: -2px;
+		outline: none !important;
+		outline-offset: 0 !important;
+	}
+}
+
+a,
+button,
+[role="button"] {
+	cursor: pointer;
+}
+
+a,
+button {
+	background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
+}
+
+address {
+	margin-bottom: 20px;
+	font-style: normal;
+}
+
+a {
+	text-decoration: none;
+
+	&:hover,
+	&:focus {
+		text-decoration: none;
+	}
+}
+
+blockquote {
+	padding: 10px 20px;
+	font-style: italic;
+	border-left: 5px solid @gray-lighter;
+	font-size: 1.2em;
+
+	p,
+	ul,
+	ol {
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	footer {
+		display: block;
+		font-size: 90%; // back to default font-size
+		line-height: 1;
+		margin-top: 14px;
+		color: @gray-light;
+
+		&:before {
+			content: '\2014 \00A0'; // em dash, nbsp
+		}
+	}
+}
+
+button {
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+}
+
+fieldset {
+	padding: 0;
+	margin: 0;
+	border: 0;
+	// Chrome and Firefox set a `min-width: min-content;` on fieldsets,
+	// so we reset that to ensure it behaves more like a standard block element.
+	// See https://github.com/twbs/bootstrap/issues/12359.
+	min-width: 0;
+}
+
+legend {
+	display: block;
+	width: 100%;
+	padding: 0;
+	margin-bottom: 20px;
+	font-size: 1.3em;
+	line-height: inherit;
+	color: @gray-dark;
+	border: 0;
+	border-bottom: 1px solid @gray-lighter;
+}
+
+iframe {
+	max-width: 100%;
+}
+
+figure {
+	margin: 0;
+
+	img {
+		display: block;
+		margin-right: auto;
+		margin-left: auto;
+	}
+
+	figcaption {
+		display: block;
+		opacity: .8;
+		font-style: italic;
+		text-align: center;
+	}
+}
+
+img,
+video,
+audio,
+embed,
+object {
+	max-width: 100%;
+}
+
+video,
+embed,
+object {
+	height: auto !important;
+}
+
+img {
+	vertical-align: middle;
+	-ms-interpolation-mode: bicubic;
+}
+
+p {
+	margin: 0 0 10px 0;
+}
+
+big {
+	font-size: 115%;
+}
+
+mark {
+	background-color: @color-warning;
+	padding: .2em;
+}
+
+abbr[title] {
+	cursor: help;
+	border-bottom: 1px dotted @gray-light;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	small {
+		font-size: 75%;
+		font-weight: normal;
+		line-height: 1;
+	}
+}
+
+.closer {
+	font-family: Helvetica, sans-serif !important;
+	margin-left: 15px;
+	font-size: 40px;
+	line-height: 42px;
+	text-shadow: 0 1px 0 #FFF;
+	color: inherit;
+	cursor: pointer;
+	opacity: 1;
+
+	button& {
+		padding: 0;
+		background: transparent;
+		border: 0;
+	}
+
+	&:hover,
+	&:focus {
+		text-decoration: none;
+		opacity: .8;
+	}
+}
+
+.btn-default {
+	.btn-theme(#EFEFEF; #222);
+	text-shadow: 0 1px 0 fade(@gray-darker, 20%);
+}
+
+.btn-success {
+	.btn-theme(@color-success; #FFF) !important;
+}
+
+.btn-info {
+	.btn-theme(@color-info; #FFF) !important;
+}
+
+.btn-warning {
+	.btn-theme(@color-warning; #FFF) !important;
+}
+
+.btn-danger {
+	.btn-theme(@color-danger; #FFF) !important;
+}

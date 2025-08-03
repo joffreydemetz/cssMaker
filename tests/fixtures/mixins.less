@@ -1,0 +1,26 @@
+// Mixins for testing
+.border-radius(@radius: @border-radius-base) {
+    border-radius: @radius;
+    -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+}
+
+.box-shadow(@shadow) {
+    box-shadow: @shadow;
+    -webkit-box-shadow: @shadow;
+    -moz-box-shadow: @shadow;
+}
+
+.transition(@transition) {
+    transition: @transition;
+    -webkit-transition: @transition;
+    -moz-transition: @transition;
+    -o-transition: @transition;
+}
+
+.gradient(@start-color, @end-color) {
+    background: @start-color;
+    background: linear-gradient(to bottom, @start-color 0%, @end-color 100%);
+    background: -webkit-linear-gradient(top, @start-color 0%, @end-color 100%);
+    background: -moz-linear-gradient(top, @start-color 0%, @end-color 100%);
+}

@@ -1,0 +1,27 @@
+.jizy-ul(){
+	padding-left: 1em;
+	.flex-display();
+	.flex-direction(column);
+}
+
+.dash-ul(){
+	padding-left: 1em;
+	list-style: none;
+	
+	> li {
+		&:before {
+			width: 1em;
+			display: inline-block;
+			margin-left: -1em;
+			content: "-";
+		}
+	}
+}
+
+.number-ul(){
+	.jizy-ul();
+	
+	> li {
+		padding-left: .5em;
+	}
+}
