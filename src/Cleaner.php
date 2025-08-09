@@ -30,7 +30,7 @@ class Cleaner
   {
     $this->css = str_replace("\r\n", "\n", $this->css);
     $this->css = str_replace("\r", "\n", $this->css);
-    //$this->css = mb_ereg_replace("\s+", " ", $this->css);
+    $this->css = mb_ereg_replace("\s+", " ", $this->css);
     $this->css = mb_trim($this->css);
     return $this;
   }

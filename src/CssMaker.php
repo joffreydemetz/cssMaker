@@ -13,26 +13,19 @@ use JDZ\CssMaker\Font;
 use JDZ\CssMaker\Variables;
 use JDZ\CssMaker\Merger;
 use JDZ\CssMaker\Cleaner;
+use JDZ\Output\Output;
 use JDZ\CssMaker\Exception\LessMakerException;
-use JDZ\CssMaker\FontsDbInterface;
-use JDZ\CssMaker\Output;
 
 /**
  * @author  Joffrey Demetz <joffrey.demetz@gmail.com>
- * 
- * - add variables to buffer
- * - add mixins to buffer
- * - add files to buffer
- * - lessc to css
- * - autoprefixer 
  * */
 class CssMaker
 {
+  protected string $nodejsBinPath;
   protected ?string $basePath = null;
   protected ?string $tmpPath = null;
   protected ?string $targetCssPath = null;
   protected ?string $targetFontPath = null;
-  protected ?string $dumpOutputPath = null;
   protected ?string $localtargetFontPath = null;
 
   protected Output $output;
@@ -40,6 +33,7 @@ class CssMaker
 
   protected array $fonts = [];
   protected array $tmpFiles = [];
+  protected string $screenBreakpointName = 'screen-breakpoint';
 
   private array $files = [
     'variables' => [],
@@ -55,10 +49,19 @@ class CssMaker
     'print' => [],
   ];
 
-  public function __construct()
+  public function __construct(?Output $output = null, string $nodejsBinPath = '')
   {
-    $this->output = new Output();
+    $this->nodejsBinPath = $nodejsBinPath;
+
+    if (null === $output) {
+      $output = new Output();
+      $output->setVerbosity(\JDZ\Output\Output::VERBOSITY_NONE);
+    }
+
+    $this->output = $output;
+
     $this->variables = new Variables();
+    $this->variables->set($this->screenBreakpointName, '900px');
   }
 
   public function setBuildPaths(string $basePath, string $target = 'build'): self
@@ -67,63 +70,6 @@ class CssMaker
     $this->setTmpPath($basePath . '/tmp/');
     $this->setTargetCssPath($basePath . '/' . $target . '/css/');
     $this->setTargetFontPath($basePath . '/' . $target . '/fonts/');
-    $this->setDumpOutputPath($basePath . '/' . $target . '/dump.txt');
-    return $this;
-  }
-
-  public function setBasePath(string $basePath): self
-  {
-    if (!is_dir($basePath)) {
-      throw new LessMakerException('Base directory does not exist: ' . $basePath);
-    }
-
-    $this->basePath = $basePath;
-
-    return $this;
-  }
-
-  public function setTmpPath(string $tmpPath): self
-  {
-    if (!is_dir($tmpPath)) {
-      throw new LessMakerException('Temporary path does not exist: ' . $tmpPath);
-    }
-
-    $this->tmpPath = $tmpPath;
-
-    return $this;
-  }
-
-  public function setTargetCssPath(string $targetCssPath): self
-  {
-    if (!is_dir($targetCssPath)) {
-      throw new LessMakerException('Target path does not exist: ' . $targetCssPath);
-    }
-
-    $this->targetCssPath = $targetCssPath;
-
-    return $this;
-  }
-
-  public function setTargetFontPath(string $targetFontPath): self
-  {
-    if (!is_dir($targetFontPath)) {
-      throw new LessMakerException('Fonts path does not exist: ' . $targetFontPath);
-    }
-
-    $this->targetFontPath = $targetFontPath;
-
-    return $this;
-  }
-
-  public function setDumpOutputPath(string $dumpOutputPath): self
-  {
-    $this->dumpOutputPath = $dumpOutputPath;
-    return $this;
-  }
-
-  public function addTmpFile(string $file): self
-  {
-    $this->tmpFiles[] = $file;
     return $this;
   }
 
@@ -173,8 +119,49 @@ class CssMaker
     $this->output->info('  ' . $this->shortenPath($path));
   }
 
+  public function addFont(object $font): void
+  {
+    if (isset($this->fonts[$font->id])) {
+      return;
+    }
 
-  public function process(string $theme): self
+    foreach (['id', 'family', 'files'] as $property) {
+      if (!isset($font->$property)) {
+        throw new LessMakerException('Font object is missing required property: ' . $property);
+      }
+    }
+
+    $this->output->dump('Adding font: ' . $font->family);
+
+    try {
+      $font = new Font([
+        'type' => 'local',
+        'id' => $font->id,
+        'family' => $font->family,
+        'display' => $font->display ?? '',
+        'style' => $font->style ?? '',
+        'weight' => $font->weight ?? '',
+        'files' => $font->files,
+      ]);
+
+      $font->load();
+
+      foreach ($font->getFormatFiles() as $file) {
+        try {
+          $this->copyFile($file->source, $this->targetFontPath . $file->filename);
+        } catch (\Throwable $e) {
+          $this->output->error($e->getMessage());
+        }
+      }
+
+      $this->fonts[$font->id] = $font;
+    } catch (\Throwable $e) {
+      $this->output->error($e->getMessage());
+    }
+  }
+
+
+  public function process(string $theme = 'default'): self
   {
     if (
       null === $this->basePath || !is_dir($this->basePath) ||
@@ -190,7 +177,17 @@ class CssMaker
     $minFilePath = $this->targetCssPath . $theme . '.min.css';
 
     $this->toLess($lessFilePath);
+
+    if (!\file_exists($lessFilePath)) {
+      throw new LessMakerException('LESS file not created: ' . $lessFilePath);
+    }
+
     $this->toCss($lessFilePath, $cssFilePath);
+
+    if (!\file_exists($cssFilePath)) {
+      throw new LessMakerException('CSS file not created: ' . $cssFilePath);
+    }
+
     $this->cleanCss($cssFilePath);
     $this->postcss($cssFilePath);
     $this->minify($cssFilePath, $minFilePath);
@@ -200,21 +197,10 @@ class CssMaker
     return $this;
   }
 
-  public function clean(): self
-  {
-    if ($this->tmpFiles) {
-      $this->output->step('cleanUp()');
-      foreach ($this->tmpFiles as $file) {
-        if ($file) {
-          $this->removeFile($file);
-        }
-      }
-      $this->output->step('OK cleanUp()');
-    }
 
-    return $this;
-  }
-
+  /**
+   * Merge LESS files into a single LESS file.
+   */
   protected function toLess(string $lessFilePath): void
   {
     $this->output->step('toLess()');
@@ -259,13 +245,17 @@ class CssMaker
     $this->output->step('OK toLess()');
   }
 
+  /**
+   * Converts the LESS file to CSS using the lessc command line tool.
+   */
   protected function toCss(string $lessFilePath, string $cssFilePath): void
   {
     $this->output->step('toCss()');
 
     try {
+
       $process = new \Symfony\Component\Process\Process([
-        'lessc',
+        $this->nodejsBinPath . 'lessc',
         $lessFilePath,
         $cssFilePath,
       ]);
@@ -282,6 +272,9 @@ class CssMaker
     }
   }
 
+  /**
+   * Cleans the generated CSS file by removing unnecessary spaces and comments.
+   */
   protected function cleanCss(string $cssFilePath): void
   {
     $this->output->step('cleanCss()');
@@ -301,13 +294,16 @@ class CssMaker
     }
   }
 
+  /**
+   * Processes the CSS file using the postcss command line tool.
+   */
   protected function postcss(string $cssFilePath): void
   {
     $this->output->step('postcss()');
 
     try {
       $process = new \Symfony\Component\Process\Process([
-        'postcss',
+        $this->nodejsBinPath . 'postcss',
         '--replace',
         '--verbose',
         '--config',
@@ -328,24 +324,27 @@ class CssMaker
     }
   }
 
+  /**
+   * Minifies the CSS file using the minify command line tool.
+   */
   protected function minify(string $cssFilePath, string $minFilePath): void
   {
     $this->output->step('minify()');
 
     try {
 
-      $process = new \Symfony\Component\Process\Process([
-        'css-minify',
-        '-f',
-        //$cssFilePath,
-        str_replace(getcwd(), '', $cssFilePath),
-        '-o',
-        dirname(str_replace(getcwd(), '', $minFilePath)),
-      ]);
+      $this->output->dump('Minifying CSS file: ' . $this->shortenPath($cssFilePath));
+
+      $process = \Symfony\Component\Process\Process::fromShellCommandline(
+        $this->nodejsBinPath . 'minify ' . $cssFilePath . ' > ' . $minFilePath
+      );
 
       if (0 !== $process->run()) {
         throw new \Symfony\Component\Process\Exception\ProcessFailedException($process);
       }
+
+      $this->output->info('Minified CSS file: ' . $this->shortenPath($minFilePath));
+      $this->output->dump('  Size: ' . (\filesize($minFilePath) / 1000) . ' Ko');
 
       $this->output->step('OK minify()');
     } catch (\Throwable $e) {
@@ -355,92 +354,58 @@ class CssMaker
     }
   }
 
-  public function dumpOutput(): void
+
+  protected function addTmpFile(string $file): self
   {
-    try {
-      file_put_contents($this->dumpOutputPath, $this->output->__toString());
-      chmod($this->dumpOutputPath, 0777);
-    } catch (\Throwable $e) {
-      throw new \RuntimeException('Error dumping output: ' . $e->getMessage());
-    }
+    $this->tmpFiles[] = $file;
+    return $this;
   }
 
-
-  private function buildLess(Merger $merger, array $types): void
+  protected function setBasePath(string $basePath): self
   {
-    $this->output->info('Add LESS for types: ' . implode(', ', $types));
-
-    $types = array_unique($types);
-
-    foreach ($this->files as $type => $files) {
-      if (empty($files)) {
-        continue;
-      }
-
-      if (!in_array($type, $types)) {
-        continue;
-      }
-
-      if ('mobile' === $type) {
-        $merger->addString('@media(max-width: @sm-max-width - 1px){ ');
-        $mediaQ = true;
-      } elseif ('screen' === $type) {
-        $merger->addString('@media(min-width: @sm-max-width){ ');
-        $mediaQ = true;
-      } elseif ('print' === $type) {
-        $merger->addString('@media print { ');
-        $mediaQ = true;
-      } else {
-        $mediaQ = false;
-      }
-
-      foreach ($files as $path) {
-        $this->output->dump(' - ' . str_pad(strtoupper($type), 10, ' ', STR_PAD_RIGHT) . ' ' . $this->shortenPath($path));
-        $merger->addFile($path);
-      }
-
-      if ($mediaQ) {
-        $merger->addString('}');
-      }
+    if (!is_dir($basePath)) {
+      throw new LessMakerException('Base directory does not exist: ' . $basePath);
     }
+
+    $this->basePath = $basePath;
+
+    return $this;
   }
 
-  public function addFont(object $font): void
+  protected function setTmpPath(string $tmpPath): self
   {
-    if (isset($this->fonts[$font->id])) {
-      return;
+    if (!is_dir($tmpPath)) {
+      throw new LessMakerException('Temporary path does not exist: ' . $tmpPath);
     }
 
-    $this->output->dump('Adding font: ' . $font->family);
+    $this->tmpPath = $tmpPath;
 
-    try {
-      $font = new Font([
-        'type' => 'local',
-        'id' => $font->id,
-        'family' => $font->family,
-        'display' => $font->display,
-        'style' => $font->style,
-        'weight' => $font->weight,
-        'files' => $font->files,
-      ]);
-
-      $font->load();
-
-      foreach ($font->getFormatFiles() as $file) {
-        try {
-          $this->copyFile($file->source, $this->targetFontPath . $file->filename);
-        } catch (\Throwable $e) {
-          $this->output->error($e->getMessage());
-        }
-      }
-
-      $this->fonts[$font->id] = $font;
-    } catch (\Throwable $e) {
-      $this->output->error($e->getMessage());
-    }
+    return $this;
   }
 
-  public function copyFile(string $source, string $target): void
+  protected function setTargetCssPath(string $targetCssPath): self
+  {
+    if (!is_dir($targetCssPath)) {
+      throw new LessMakerException('Target path does not exist: ' . $targetCssPath);
+    }
+
+    $this->targetCssPath = $targetCssPath;
+
+    return $this;
+  }
+
+  protected function setTargetFontPath(string $targetFontPath): self
+  {
+    if (!is_dir($targetFontPath)) {
+      throw new LessMakerException('Fonts path does not exist: ' . $targetFontPath);
+    }
+
+    $this->targetFontPath = $targetFontPath;
+
+    return $this;
+  }
+
+  protected function copyFile(string $source, string $target): void
   {
     $this->output->dump('Copy file');
     $this->output->dump('  Source: ' . $this->shortenPath($source));
@@ -462,7 +427,7 @@ class CssMaker
     }
   }
 
-  public function removeFile(string $path): void
+  protected function removeFile(string $path): void
   {
     if ($path && \file_exists($path) && is_file($path)) {
       $this->output->dump('Remove file:');
@@ -479,7 +444,7 @@ class CssMaker
     }
   }
 
-  public function dumpFile(string $path, string $content, bool $showSize = true): void
+  protected function dumpFile(string $path, string $content, bool $showSize = true): void
   {
     $this->output->dump('Dumping content to file');
     $this->output->dump('  File: ' . $this->shortenPath($path));
@@ -500,28 +465,92 @@ class CssMaker
   }
 
 
+  protected function cleanPath(string $path, bool $stripCwd = false): string
+  {
+    $path = str_replace('\\', '/', $path);
+    if ($stripCwd) {
+      $cwd = $this->cleanPath(getcwd() . '/');
+      $path = str_replace($cwd, '', $path);
+    }
+    return $path;
+  }
+
   protected function shortenPath(string $path): string
   {
-    $path = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $path);
+    $basePath = $this->cleanPath($this->basePath);
+    $tmpPath = $this->cleanPath($this->tmpPath);
+    $localtargetFontPath = $this->cleanPath($this->targetFontPath);
 
-    if ($this->tmpPath && strpos($path, $this->tmpPath) === 0) {
-      $path = substr($path, strlen($this->tmpPath));
-      $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
+    $path = $this->cleanPath($path);
+
+    if ($tmpPath && strpos($path, $tmpPath) === 0) {
+      $path = substr($path, strlen($tmpPath));
       return '@TMP/' . $path;
     }
 
-    if ($this->localtargetFontPath && strpos($path, $this->localtargetFontPath) === 0) {
-      $path = substr($path, strlen($this->localtargetFontPath));
-      $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
+    if ($localtargetFontPath && strpos($path, $localtargetFontPath) === 0) {
+      $path = substr($path, strlen($localtargetFontPath));
       return '@FONTS/' . $path;
     }
 
-    if ($this->basePath && strpos($path, $this->basePath) === 0) {
-      $path = substr($path, strlen($this->basePath));
-      $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
+    if ($basePath && strpos($path, $basePath) === 0) {
+      $path = substr($path, strlen($basePath));
       return '@BASE/' . $path;
     }
 
     return $path;
+  }
+
+
+  private function buildLess(Merger $merger, array $types): void
+  {
+    $this->output->info('Add LESS for types: ' . implode(', ', $types));
+
+    $types = array_unique($types);
+
+    foreach ($this->files as $type => $files) {
+      if (empty($files)) {
+        continue;
+      }
+
+      if (!in_array($type, $types)) {
+        continue;
+      }
+
+      if ('mobile' === $type) {
+        $merger->addString('@media(max-width: @' . $this->screenBreakpointName . ' - 1px){ ');
+        $mediaQ = true;
+      } elseif ('screen' === $type) {
+        $merger->addString('@media(min-width: @' . $this->screenBreakpointName . '){ ');
+        $mediaQ = true;
+      } elseif ('print' === $type) {
+        $merger->addString('@media print { ');
+        $mediaQ = true;
+      } else {
+        $mediaQ = false;
+      }
+
+      foreach ($files as $path) {
+        $this->output->dump(' - ' . str_pad(strtoupper($type), 10, ' ', STR_PAD_RIGHT) . ' ' . $this->shortenPath($path));
+        $merger->addFile($path);
+      }
+
+      if ($mediaQ) {
+        $merger->addString('}');
+      }
+    }
+  }
+
+  private function clean(): void
+  {
+    if ($this->tmpFiles) {
+      $this->output->step('cleanUp()');
+      foreach ($this->tmpFiles as $file) {
+        if ($file) {
+          $this->removeFile($file);
+        }
+      }
+      $this->output->step('OK cleanUp()');
+    }
   }
 }
