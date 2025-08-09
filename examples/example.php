@@ -6,11 +6,8 @@
  * extract the glyphicons to a separate package
  * extract flags to a separate package
  * specify the font.yml format
- * 
  */
 require_once realpath(__DIR__ . '/../vendor/autoload.php');
-
-define('CSSMAKER_BASEPATH', realpath(__DIR__ . '/'));
 
 $config = require_once realpath(__DIR__ . '/config.php') ?: [];
 
@@ -48,13 +45,15 @@ if (!\is_dir(__DIR__ . '/' . $target . '/images/')) {
 
 require_once __DIR__ . '/src/MyCssMaker.php';
 
-$localFontsPath = realpath(__DIR__ . '/fonts/') . '/';
-$tmpPath = realpath(__DIR__ . '/tmp/') . '/';
+$output = new \JDZ\Output\Output();
+$output->setVerbosity(\JDZ\Output\Output::VERBOSITY_ALL);
 
-$less = new MyCssMaker();
+$nodejsBinPath = realpath(__DIR__ . '/../node_modules/.bin/') . DIRECTORY_SEPARATOR;
+
+$less = new MyCssMaker($output, $nodejsBinPath);
 
 try {
-    $less->setBuildPaths(CSSMAKER_BASEPATH, $target);
+    $less->setBuildPaths(realpath(__DIR__ . '/'), $target);
 
     $less->addLessFiles($config['less'] ?: []);
     $less->addLocalFonts($config['fonts'] ?: []);
@@ -63,10 +62,7 @@ try {
 
     $less->process($theme);
 } catch (\Throwable $e) {
-    //echo $e->getMessage();
     echo (string)$e;
 }
 
-$less->dumpOutput();
-
-exit();
+$output->toFile(realpath(__DIR__) . '/dump.txt');

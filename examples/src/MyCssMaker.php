@@ -1,23 +1,25 @@
 <?php
 
 use JDZ\CssMaker\CssMaker;
-use JDZ\CssMaker\Output;
 use JDZ\FontManager\FontsDb;
+use JDZ\Output\Output;
 
-require_once __DIR__ . '/src/Glyphicons.php';
-require_once __DIR__ . '/src/Flags.php';
+require_once __DIR__ . '/Glyphicons.php';
+require_once __DIR__ . '/Flags.php';
 
 class MyCssMaker extends CssMaker
 {
     private ?FontsDb $fontsDb = null;
 
-    public function __construct()
+    public function __construct(?Output $output = null, string $nodejsBinPath = '')
     {
-        parent::__construct();
+        parent::__construct($output, $nodejsBinPath);
 
-        $this->output->setVerbosity(Output::VERBOSITY_ALL);
+        $this->variables->set($this->screenBreakpointName, '@sm-max-width');
 
-        $fontsPath = realpath(__DIR__ . '/fonts/') . '/';
+        $this->output->setVerbosity(\JDZ\Output\Output::VERBOSITY_ALL);
+
+        $fontsPath = realpath(__DIR__ . '/../fonts/') . '/';
         $formats = ['ttf', 'woff2', 'woff'];
         $googleFontsApiKey = null; // ENTER YOUR GOOGLE FONT API KEY HERE
 

@@ -1,4 +1,6 @@
 <?php
+$basePath = realpath(__DIR__ . '/');
+
 return [
     'fonts' => [
         'lato/regular',
@@ -23,34 +25,34 @@ return [
 
     'less' => [
         'variables' => [
-            CSSMAKER_BASEPATH . '/less/core/variables.yml',
+            $basePath . '/less/core/variables.yml',
         ],
         'mixins' => [
-            CSSMAKER_BASEPATH . '/less/core/mixins.less',
-            CSSMAKER_BASEPATH . '/less/core/mixins/gradients.less',
-            CSSMAKER_BASEPATH . '/less/core/mixins/icons.less',
-            CSSMAKER_BASEPATH . '/less/core/mixins/lists.less',
-            CSSMAKER_BASEPATH . '/less/core/mixins/vendored.less',
+            $basePath . '/less/core/mixins.less',
+            $basePath . '/less/core/mixins/gradients.less',
+            $basePath . '/less/core/mixins/icons.less',
+            $basePath . '/less/core/mixins/lists.less',
+            $basePath . '/less/core/mixins/vendored.less',
         ],
         'normalize' => [
-            CSSMAKER_BASEPATH . '/less/normalize/necolas.less',
-            CSSMAKER_BASEPATH . '/less/normalize/sindresorhus.less',
+            $basePath . '/less/normalize/necolas.less',
+            $basePath . '/less/normalize/sindresorhus.less',
         ],
         'structure' => [
-            CSSMAKER_BASEPATH . '/less/core/structure.less',
+            $basePath . '/less/core/structure.less',
         ],
         'mobile' => [
-            CSSMAKER_BASEPATH . '/less/core/mobile.less',
+            $basePath . '/less/core/mobile.less',
         ],
         'screen' => [
-            CSSMAKER_BASEPATH . '/less/core/screen.less',
+            $basePath . '/less/core/screen.less',
         ],
         'queries' => [
-            CSSMAKER_BASEPATH . '/less/core/queries.less',
+            $basePath . '/less/core/queries.less',
         ],
         'print' => [
-            CSSMAKER_BASEPATH . '/less/normalize/print.less',
-            CSSMAKER_BASEPATH . '/less/core/print.less',
+            $basePath . '/less/normalize/print.less',
+            $basePath . '/less/core/print.less',
         ],
     ],
 ];

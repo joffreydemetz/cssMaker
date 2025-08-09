@@ -1,25 +1,15 @@
-- local: true
-  id: glyphicons
-  family: Glyphicons
-  category: ""
-  version: V1
-  lastModified: ""
-  variants: [filetypes, halflings, regular, social]
-- id: lato
-  family: Lato
-  category: sans-serif
-  version: v24
-  lastModified: "2024-09-04"
-  variants:
-      [
-          regular,
-          "100",
-          100italic,
-          "300",
-          300italic,
-          italic,
-          "700",
-          700italic,
-          "900",
-          900italic,
-      ]
+-
+    local: true
+    id: glyphicons
+    family: Glyphicons
+    category: ''
+    version: V1
+    lastModified: ''
+    variants: [filetypes, halflings, regular, social]
+-
+    id: lato
+    family: Lato
+    category: sans-serif
+    version: v24
+    lastModified: '2024-09-04'
+    variants: [regular, '100', 100italic, '300', 300italic, italic, '700', 700italic, '900', 900italic]
