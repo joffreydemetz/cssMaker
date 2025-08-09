@@ -18,9 +18,6 @@ ini_set('display_errors', 1);
 // Set timezone for consistent test results
 date_default_timezone_set('UTC');
 
-// Define test constants if needed
-define('CSSMAKER_TEST_MODE', true);
-
 // Ensure temp directory exists and is writable
 $tempDir = sys_get_temp_dir();
 if (!is_writable($tempDir)) {

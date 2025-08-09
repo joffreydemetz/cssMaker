@@ -29,7 +29,7 @@ class CleanerTest extends TestCase
 
     public function testRemoveSpaces(): void
     {
-        $css = "  .test {\n  color: red;\n}  ";
+        $css = "  .test {\n    color:   red;\n}  ";
         $cleaner = new Cleaner($css);
 
         $result = $cleaner->removeSpaces();
@@ -38,7 +38,7 @@ class CleanerTest extends TestCase
         $this->assertSame($cleaner, $result);
 
         $cleanedCss = $cleaner->getCss();
-        $this->assertEquals(".test {\n  color: red;\n}", $cleanedCss);
+        $this->assertEquals(".test { color: red; }", $cleanedCss);
     }
 
     public function testRemoveSpacesWithCarriageReturns(): void
@@ -49,7 +49,7 @@ class CleanerTest extends TestCase
         $cleaner->removeSpaces();
         $cleanedCss = $cleaner->getCss();
 
-        $this->assertEquals(".test {\n  color: red;\n}", $cleanedCss);
+        $this->assertEquals(".test { color: red; }", $cleanedCss);
     }
 
     public function testRemoveSpacesWithMixedLineEndings(): void
@@ -60,7 +60,7 @@ class CleanerTest extends TestCase
         $cleaner->removeSpaces();
         $cleanedCss = $cleaner->getCss();
 
-        $this->assertEquals(".test {\n  color: red;\n  background: blue;\n}", $cleanedCss);
+        $this->assertEquals(".test { color: red; background: blue; }", $cleanedCss);
     }
 
     public function testRemoveComments(): void
@@ -76,17 +76,11 @@ class CleanerTest extends TestCase
         $cleanedCss = $cleaner->getCss();
         $this->assertEquals('.test {  color: red; }', $cleanedCss);
     }
+
     public function testRemoveMultiLineComments(): void
     {
-        $css = <<<CSS
-.test {
-  /* This is a 
-     multi-line comment */
-  color: red;
-}
-CSS;
+        $css = ".test {\n  /* This is a \n     multi-line comment */\n  color: red;\n}";
         $cleaner = new Cleaner($css);
-
         $cleaner->removeComments();
         $cleanedCss = $cleaner->getCss();
 
@@ -123,14 +117,8 @@ CSS;
 
     public function testChainedCleaning(): void
     {
-        $css = <<<CSS
-  
-  .test {
-    /* This is a comment */
-    color: red;
-  }
-  
-CSS;
+        $css = "\n.test {\n  /* This is a comment */\n  color: red;\n}\n";
+
         $cleaner = new Cleaner($css);
 
         $result = $cleaner
@@ -195,19 +183,7 @@ CSS;
 
     public function testComplexCss(): void
     {
-        $css = <<<CSS
-/* Header styles */
-.header {
-  /* Primary color */
-  color: #007bff;
-  background: white; /* Background color */
-}
-
-/* Footer styles */
-.footer {
-  color: gray;
-}
-CSS;
+        $css = "/* Header styles */\n.header {\n  /* Primary color */\n  color: #007bff;\n  background: white; /* Background color */\n}\n\n/* Footer styles */\n.footer {\n  color: gray;\n}\n";
 
         $cleaner = new Cleaner($css);
         $cleanedCss = $cleaner

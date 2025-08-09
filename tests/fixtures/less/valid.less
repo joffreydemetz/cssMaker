@@ -1,0 +1,10 @@
+@primary-color: #333;
+
+.test-class {
+    color: @primary-color;
+    font-size: 14px;
+
+    .nested {
+        background: lighten(@primary-color, 20%);
+    }
+}

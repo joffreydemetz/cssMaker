@@ -1,0 +1,26 @@
+.test-class {
+    display: flex;
+    flex-direction: column;
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+    user-select: none;
+    box-sizing: border-box;
+}
+
+.gradient-class {
+    background: linear-gradient(to right, #ff0000, #00ff00);
+}
+
+.animation-class {
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

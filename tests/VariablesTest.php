@@ -1,9 +1,10 @@
 <?php
 
-namespace JDZ\CssMaker\Tests\Elements;
+namespace JDZ\CssMaker\Tests;
 
 use JDZ\CssMaker\Variables;
 use PHPUnit\Framework\TestCase;
+use JDZ\CssMaker\Tests\Helper;
 
 /**
  * @covers \JDZ\CssMaker\Variables
@@ -22,7 +23,7 @@ class VariablesTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->removeDirectory($this->testTmpDir);
+        Helper::removeDirectory($this->testTmpDir);
     }
 
     public function testConstructor(): void
@@ -169,19 +170,5 @@ YAML;
 
         $this->assertContains('@font-family: "Helvetica Neue", Arial;', $vars);
         $this->assertContains("@content: 'Hello World';", $vars);
-    }
-
-    private function removeDirectory(string $dir): void
-    {
-        if (!is_dir($dir)) {
-            return;
-        }
-
-        $files = array_diff(scandir($dir), ['.', '..']);
-        foreach ($files as $file) {
-            $path = $dir . DIRECTORY_SEPARATOR . $file;
-            is_dir($path) ? $this->removeDirectory($path) : unlink($path);
-        }
-        rmdir($dir);
     }
 }

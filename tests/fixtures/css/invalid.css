@@ -1,0 +1,6 @@
+.invalid-class {
+    color: #invalid-color-value-that-is-too-long;
+    property-that-does-not-exist: value;
+
+    unclosed-block: {
+        // missing closing brace and invalid syntax

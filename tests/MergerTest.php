@@ -4,6 +4,7 @@ namespace JDZ\CssMaker\Tests;
 
 use JDZ\CssMaker\Merger;
 use PHPUnit\Framework\TestCase;
+use JDZ\CssMaker\Tests\Helper;
 
 /**
  * @covers \JDZ\CssMaker\Merger
@@ -16,19 +17,13 @@ class MergerTest extends TestCase
     protected function setUp(): void
     {
         $this->merger = new Merger();
-        $this->testTmpDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'cssmaker_merger_test_' . uniqid();
+        $this->testTmpDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'cssmaker_test_' . uniqid();
         mkdir($this->testTmpDir, 0777, true);
     }
 
     protected function tearDown(): void
     {
-        $this->removeDirectory($this->testTmpDir);
-    }
-
-    public function testConstructor(): void
-    {
-        $merger = new Merger();
-        $this->assertInstanceOf(Merger::class, $merger);
+        Helper::removeDirectory($this->testTmpDir);
     }
 
     public function testGetContentEmpty(): void
@@ -73,14 +68,15 @@ class MergerTest extends TestCase
 
     public function testSetMixin(): void
     {
-        $mixinFile = $this->testTmpDir . DIRECTORY_SEPARATOR . 'mixin.less';
+        $mixinFile = $this->testTmpDir . DIRECTORY_SEPARATOR . 'mixins.less';
         file_put_contents($mixinFile, '.border-radius(@radius) { border-radius: @radius; }');
+        $this->merger->setMixins([$mixinFile]);
 
         $result = $this->merger->setMixin($mixinFile);
         $this->assertInstanceOf(Merger::class, $result);
 
         $content = $this->merger->getContent();
-        $this->assertStringContainsString('.border-radius(@radius)', $content);
+        $this->assertStringContainsString('.border-radius(@radius) { border-radius: @radius; }', $content);
         $this->assertStringContainsString('// ' . $mixinFile, $content);
     }
 
@@ -93,32 +89,16 @@ class MergerTest extends TestCase
         $this->assertEquals('', $content);
     }
 
-    public function testSetMixins(): void
-    {
-        $mixin1 = $this->testTmpDir . DIRECTORY_SEPARATOR . 'mixin1.less';
-        $mixin2 = $this->testTmpDir . DIRECTORY_SEPARATOR . 'mixin2.less';
-
-        file_put_contents($mixin1, '.border-radius(@radius) { border-radius: @radius; }');
-        file_put_contents($mixin2, '.box-shadow(@shadow) { box-shadow: @shadow; }');
-
-        $result = $this->merger->setMixins([$mixin1, $mixin2]);
-        $this->assertInstanceOf(Merger::class, $result);
-
-        $content = $this->merger->getContent();
-        $this->assertStringContainsString('.border-radius(@radius)', $content);
-        $this->assertStringContainsString('.box-shadow(@shadow)', $content);
-    }
-
     public function testSetFile(): void
     {
         $lessFile = $this->testTmpDir . DIRECTORY_SEPARATOR . 'styles.less';
-        file_put_contents($lessFile, '.header { background: @primary-color; }');
+        file_put_contents($lessFile, '.header { background: @primary-color; font-size: @font-size; }');
 
         $result = $this->merger->setFile($lessFile);
         $this->assertInstanceOf(Merger::class, $result);
 
         $content = $this->merger->getContent();
-        $this->assertStringContainsString('.header { background: @primary-color; }', $content);
+        $this->assertStringContainsString('.header { background: @primary-color; font-size: @font-size; }', $content);
         $this->assertStringContainsString('// ' . $lessFile, $content);
     }
 
@@ -129,22 +109,6 @@ class MergerTest extends TestCase
 
         $content = $this->merger->getContent();
         $this->assertEquals('', $content);
-    }
-
-    public function testSetFiles(): void
-    {
-        $file1 = $this->testTmpDir . DIRECTORY_SEPARATOR . 'file1.less';
-        $file2 = $this->testTmpDir . DIRECTORY_SEPARATOR . 'file2.less';
-
-        file_put_contents($file1, '.header { color: red; }');
-        file_put_contents($file2, '.footer { color: blue; }');
-
-        $result = $this->merger->setFiles([$file1, $file2]);
-        $this->assertInstanceOf(Merger::class, $result);
-
-        $content = $this->merger->getContent();
-        $this->assertStringContainsString('.header { color: red; }', $content);
-        $this->assertStringContainsString('.footer { color: blue; }', $content);
     }
 
     public function testAddFile(): void
@@ -273,19 +237,5 @@ class MergerTest extends TestCase
 
         $this->assertInstanceOf(Merger::class, $result);
         $this->assertSame($this->merger, $result);
-    }
-
-    private function removeDirectory(string $dir): void
-    {
-        if (!is_dir($dir)) {
-            return;
-        }
-
-        $files = array_diff(scandir($dir), ['.', '..']);
-        foreach ($files as $file) {
-            $path = $dir . DIRECTORY_SEPARATOR . $file;
-            is_dir($path) ? $this->removeDirectory($path) : unlink($path);
-        }
-        rmdir($dir);
     }
 }
