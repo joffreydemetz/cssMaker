@@ -20,6 +20,7 @@
     ],
     "require": {
         "php": ">=8.1",
+        "jdz/output": "^1.0",
         "jdz/data": "^1.0",
         "symfony/yaml": "^7.2",
         "symfony/process": "^7.2"
@@ -42,17 +43,26 @@
         }
     },
     "scripts": {
-        "npm": [
-            "npm install -g less less-plugin-clean-css less-plugin-autoprefix",
-            "npm install -g postcss postcss-cli postcss-autoprefixer postcss-less-parser postcss-safe-parser postcss-discard-comments",
-            "npm install -g css-minify"
+        "npm:local": [
+            "npm install less",
+            "npm install postcss postcss-cli autoprefixer postcss-safe-parser postcss-discard-comments",
+            "npm install minify"
         ],
-        "post-update-cmd": "@npm",
-        "post-install-cmd": "@npm",
+        "npm:global": [
+            "npm install -g less",
+            "npm install -g postcss postcss-cli autoprefixer postcss-safe-parser postcss-discard-comments",
+            "npm install -g minify"
+        ],
         "test": [
+            "@npm:local",
             "phpunit"
         ],
+        "test:cssmaker": "phpunit tests/CssMakerTest.php",
+        "test:cleaner": "phpunit tests/CssMakerCleanerTest.php",
+        "test:variables": "phpunit tests/CssMakerVariablesTest.php",
+        "test:merger": "phpunit tests/CssMakerMergerTest.php",
         "example": [
+            "@npm:local",
             "php examples/example.php"
         ]
     }

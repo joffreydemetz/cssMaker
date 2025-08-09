@@ -1,5 +1,10 @@
 composer.lock
 vendor/
+package.json
 package-lock.json
 .phpunit.cache/
 googlefonts.php
+examples/build/*
+examples/tmp/*
+examples/dump.txt
+node_modules/
