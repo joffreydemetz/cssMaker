@@ -58,9 +58,9 @@
             "phpunit"
         ],
         "test:cssmaker": "phpunit tests/CssMakerTest.php",
-        "test:cleaner": "phpunit tests/CssMakerCleanerTest.php",
-        "test:variables": "phpunit tests/CssMakerVariablesTest.php",
-        "test:merger": "phpunit tests/CssMakerMergerTest.php",
+        "test:cleaner": "phpunit tests/CleanerTest.php",
+        "test:variables": "phpunit tests/VariablesTest.php",
+        "test:merger": "phpunit tests/MergerTest.php",
         "example": [
             "@npm:local",
             "php examples/example.php"
