@@ -37,6 +37,9 @@ class Cleaner
 
   public function removeComments(): self
   {
+    // remove single line comments
+    $this->css = preg_replace("/(\s*\/\/\s*.+\s*\n)/mUs", " ", $this->css);
+    // remove multi line comments
     $this->css = preg_replace("/(\s*\/[*]{1,}\s*.+\s*[*]{1,}\/\s*)/mUs", " ", $this->css);
     // $this->css = preg_replace("/\s+/", " ", $this->css);
 

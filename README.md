@@ -307,7 +307,7 @@ ie >= 11
 
 ### PHP Dependencies
 - `jdz/output`: ^1.0 (Output handling)
-- `jdz/data`: ^1.0 (Data processing)
+- `jdz/data`: ^2.0 (Data processing)
 - `symfony/yaml`: ^7.2 (YAML parsing)
 - `symfony/process`: ^7.2 (External process execution)
 - `jdz/fontmanager`: ^1.0 (Font management - optional)

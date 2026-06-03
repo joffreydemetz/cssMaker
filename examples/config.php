@@ -1,5 +1,5 @@
 <?php
-$basePath = realpath(__DIR__ . '/');
+$basePath = realpath(__DIR__ . '/') . DIRECTORY_SEPARATOR . 'less' . DIRECTORY_SEPARATOR;
 
 return [
     'fonts' => [
@@ -25,34 +25,34 @@ return [
 
     'less' => [
         'variables' => [
-            $basePath . '/less/core/variables.yml',
+            $basePath . 'core' . DIRECTORY_SEPARATOR . 'variables.yml',
         ],
         'mixins' => [
-            $basePath . '/less/core/mixins.less',
-            $basePath . '/less/core/mixins/gradients.less',
-            $basePath . '/less/core/mixins/icons.less',
-            $basePath . '/less/core/mixins/lists.less',
-            $basePath . '/less/core/mixins/vendored.less',
+            $basePath . 'core' . DIRECTORY_SEPARATOR . 'mixins.less',
+            $basePath . 'core' . DIRECTORY_SEPARATOR . 'mixins' . DIRECTORY_SEPARATOR . 'gradients.less',
+            $basePath . 'core' . DIRECTORY_SEPARATOR . 'mixins' . DIRECTORY_SEPARATOR . 'icons.less',
+            $basePath . 'core' . DIRECTORY_SEPARATOR . 'mixins' . DIRECTORY_SEPARATOR . 'lists.less',
+            $basePath . 'core' . DIRECTORY_SEPARATOR . 'mixins' . DIRECTORY_SEPARATOR . 'vendored.less',
         ],
         'normalize' => [
-            $basePath . '/less/normalize/necolas.less',
-            $basePath . '/less/normalize/sindresorhus.less',
+            $basePath . 'normalize' . DIRECTORY_SEPARATOR . 'necolas.less',
+            $basePath . 'normalize' . DIRECTORY_SEPARATOR . 'sindresorhus.less',
         ],
         'structure' => [
-            $basePath . '/less/core/structure.less',
+            $basePath . 'core' . DIRECTORY_SEPARATOR . 'structure.less',
         ],
         'mobile' => [
-            $basePath . '/less/core/mobile.less',
+            $basePath . 'core' . DIRECTORY_SEPARATOR . 'mobile.less',
         ],
         'screen' => [
-            $basePath . '/less/core/screen.less',
+            $basePath . 'core' . DIRECTORY_SEPARATOR . 'screen.less',
         ],
         'queries' => [
-            $basePath . '/less/core/queries.less',
+            $basePath . 'core' . DIRECTORY_SEPARATOR . 'queries.less',
         ],
         'print' => [
-            $basePath . '/less/normalize/print.less',
-            $basePath . '/less/core/print.less',
+            $basePath . 'normalize' . DIRECTORY_SEPARATOR . 'print.less',
+            $basePath . 'core' . DIRECTORY_SEPARATOR . 'print.less',
         ],
     ],
 ];

@@ -26,7 +26,7 @@ class CssMaker
   protected ?string $tmpPath = null;
   protected ?string $targetCssPath = null;
   protected ?string $targetFontPath = null;
-  protected ?string $localtargetFontPath = null;
+  protected ?string $localFontPath = null;
 
   protected Output $output;
   protected Variables $variables;
@@ -282,8 +282,8 @@ class CssMaker
     try {
       $cleaner = new Cleaner(file_get_contents($cssFilePath));
       $cleaner
-        ->removeSpaces()
-        ->removeComments();
+        ->removeComments()
+        ->removeSpaces();
 
       $this->dumpFile($cssFilePath, $cleaner->getCss());
       $this->output->step('OK cleanCss()');
@@ -405,6 +405,7 @@ class CssMaker
     return $this;
   }
 
+
   protected function copyFile(string $source, string $target): void
   {
     $this->output->dump('Copy file');
@@ -479,7 +480,7 @@ class CssMaker
   {
     $basePath = $this->cleanPath($this->basePath);
     $tmpPath = $this->cleanPath($this->tmpPath);
-    $localtargetFontPath = $this->cleanPath($this->targetFontPath);
+    $localFontPath = $this->cleanPath($this->targetFontPath);
 
     $path = $this->cleanPath($path);
 
@@ -488,8 +489,8 @@ class CssMaker
       return '@TMP/' . $path;
     }
 
-    if ($localtargetFontPath && strpos($path, $localtargetFontPath) === 0) {
-      $path = substr($path, strlen($localtargetFontPath));
+    if ($localFontPath && strpos($path, $localFontPath) === 0) {
+      $path = substr($path, strlen($localFontPath));
       return '@FONTS/' . $path;
     }
 

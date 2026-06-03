@@ -28,7 +28,7 @@ class MyCssMaker extends CssMaker
         $this->output->info('  Fonts path: ' . $fontsPath);
         $this->output->info('  Google Fonts API Key: ' . ($googleFontsApiKey ?: 'None'));
 
-        $this->localtargetFontPath = $fontsPath;
+        $this->localFontPath = $fontsPath;
 
         $this->fontsDb = new FontsDb($fontsPath, $formats);
         $this->fontsDb->addProvider(new \JDZ\FontManager\Providers\MrandtlfProvider());
