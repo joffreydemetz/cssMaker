@@ -30,9 +30,9 @@ composer npm:global
 
 ## Dependencies
 
-jdz/fontmanager is required for font management and @font-face generation.
 jdz/data is required for data handling and processing.
 jdz/output is required for output handling and logging.
+jdz/fontmanager is optional (suggested): the bundled example uses it to manage local fonts before handing them to `addFont()`; the @font-face generation itself is built in.
 
 ## Quick Start
 
@@ -149,7 +149,7 @@ $variables->set('screen-breakpoint', '768px');
 use JDZ\Output\Output;
 
 $output = new Output();
-$output->setVerbosity(Output::VERBOSITY_ALL);
+$output->setVerbosity(Output::VERBOSITY_ALL); // jdz/output 1.x verbosity constant
 
 $cssMaker = new CssMaker($output);
 // Now you'll see detailed processing information
@@ -301,16 +301,16 @@ ie >= 11
 
 ## Requirements
 
-- **PHP**: >= 8.1
+- **PHP**: >= 8.2
 - **Composer**: For dependency management
-- **Node.js**: >= 14.0 (for LESS, PostCSS, and minification tools)
+- **Node.js + npm**: for the `lessc`, `postcss` (postcss-cli, autoprefixer, postcss-safe-parser, postcss-discard-comments) and `minify` command line tools — `composer npm:local` or `composer npm:global` installs them. If they are not on the `PATH`, pass their directory (with a trailing slash) as the second constructor argument: `new CssMaker($output, '/path/to/node_modules/.bin/')`.
 
 ### PHP Dependencies
 - `jdz/output`: ^1.0 (Output handling)
 - `jdz/data`: ^2.0 (Data processing)
-- `symfony/yaml`: ^7.2 (YAML parsing)
-- `symfony/process`: ^7.2 (External process execution)
-- `jdz/fontmanager`: ^1.0 (Font management - optional)
+- `symfony/yaml`: ^7.4 (YAML parsing)
+- `symfony/process`: ^7.4 (External process execution)
+- `jdz/fontmanager` (Font management - optional, suggested)
 
 ## Performance Tips
 
@@ -357,7 +357,7 @@ Enable verbose output for troubleshooting:
 use JDZ\Output\Output;
 
 $output = new Output();
-$output->setVerbosity(Output::VERBOSITY_ALL);
+$output->setVerbosity(Output::VERBOSITY_ALL); // jdz/output 1.x verbosity constant
 
 $cssMaker = new CssMaker($output);
 // Detailed processing information will be displayed
@@ -381,7 +381,9 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for version history and updates.
+- **1.0.2** — PHP >= 8.2, `jdz/data` ^2.0, Symfony ^7.4, PHPUnit 11; the cleaner also strips `//` single-line comments, and removes comments before collapsing whitespace.
+- **1.0.1** — Output goes through `jdz/output` (the bundled `Output` class is gone); test suite split per feature.
+- **1.0.0** — Initial release.
 
 ## Support
 
