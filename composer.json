@@ -28,7 +28,7 @@
         "symfony/process": "^7.4"
     },
     "require-dev": {
-        "jdz/fontmanager": "^1.0",
+        "jdz/fontmanager": "^2.0",
         "phpunit/phpunit": "^11.0"
     },
     "suggest": {
