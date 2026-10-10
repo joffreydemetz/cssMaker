@@ -55,10 +55,7 @@
             "npm install -g postcss postcss-cli autoprefixer postcss-safe-parser postcss-discard-comments",
             "npm install -g minify"
         ],
-        "test": [
-            "@npm:local",
-            "phpunit"
-        ],
+        "test": "phpunit --colors=always --testdox",
         "test:cssmaker": "phpunit tests/CssMakerTest.php",
         "test:cleaner": "phpunit tests/CleanerTest.php",
         "test:variables": "phpunit tests/VariablesTest.php",
@@ -66,6 +63,7 @@
         "example": [
             "@npm:local",
             "php examples/example.php"
-        ]
+        ],
+        "test-coverage": ["@putenv XDEBUG_MODE=coverage", "phpunit --coverage-html coverage"]
     }
 }
