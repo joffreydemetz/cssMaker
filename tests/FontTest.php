@@ -40,6 +40,19 @@ class FontTest extends TestCase
                 ['display' => 'swap', 'style' => 'italic', 'weight' => '700', 'files' => ['woff2' => '/src/fonts/test-font.woff2']],
                 "@font-face {\n  font-display: swap;\n  font-family: 'Test Font';\n  font-style: italic;\n  font-weight: 700;\n  src: url('@{PATH_FONTS}test-font.woff2') format('woff2');\n}",
             ],
+            // browsers take the first format they support: TTF used to come first, so WOFF2 was never used
+            'every format, the IE fallback then the smallest' => [
+                ['files' => [
+                    'ttf' => '/src/fonts/test-font.ttf',
+                    'svg' => '/src/fonts/test-font.svg',
+                    'woff' => '/src/fonts/test-font.woff',
+                    'eot' => '/src/fonts/test-font.eot',
+                    'woff2' => '/src/fonts/test-font.woff2',
+                ]],
+                "@font-face {\n  font-family: 'Test Font';\n  src: url('@{PATH_FONTS}test-font.eot?#iefix') format('embedded-opentype'), "
+                . "url('@{PATH_FONTS}test-font.woff2') format('woff2'), url('@{PATH_FONTS}test-font.woff') format('woff'), "
+                . "url('@{PATH_FONTS}test-font.ttf') format('truetype'), url('@{PATH_FONTS}test-font.svg#TestFont') format('svg');\n}",
+            ],
             'files that are not font formats are left out' => [
                 ['files' => ['less' => '/src/fonts/test-font.less', 'otf' => '/src/fonts/test-font.otf', 'woff2' => '/src/fonts/test-font.woff2']],
                 "@font-face {\n  font-family: 'Test Font';\n  src: url('@{PATH_FONTS}test-font.woff2') format('woff2');\n}",

@@ -28,11 +28,13 @@ class Font
 
   public function __construct(array $data)
   {
+    // the order of src in @font-face: browsers take the first format they support
+    // (ttf came first, so woff2 was never used)
     $this->formats = [
-      'ttf' => null,
       'eot' => null,
       'woff2' => null,
       'woff' => null,
+      'ttf' => null,
       'svg' => null,
     ];
 
