@@ -30,23 +30,27 @@ class Cleaner
   {
     $this->css = str_replace("\r\n", "\n", $this->css);
     $this->css = str_replace("\r", "\n", $this->css);
-    $this->css = mb_ereg_replace("\s+", " ", $this->css);
-    $this->css = mb_trim($this->css);
+    // ASCII whitespace only, byte-wise: mb_ereg's \s also took the no-break space,
+    // and returned null on bytes that are not UTF-8 (a TypeError); trim() works
+    // on PHP 8.2 where mb_trim() does not exist
+    // (\x0B, not PCRE's \v: that class includes byte 0x85, inside UTF-8 letters)
+    $this->css = (string) preg_replace('/[ \t\n\f\x0B]+/', ' ', $this->css);
+    $this->css = trim($this->css, " \t\n\f\v");
     return $this;
   }
 
   public function removeComments(): self
   {
-    // remove single line comments
-    $this->css = preg_replace("/(\s*\/\/\s*.+\s*\n)/mUs", " ", $this->css);
-    // remove multi line comments
-    $this->css = preg_replace("/(\s*\/[*]{1,}\s*.+\s*[*]{1,}\/\s*)/mUs", " ", $this->css);
-    // $this->css = preg_replace("/\s+/", " ", $this->css);
+    // block comments with the whitespace before them, each up to its own */ (an
+    // empty one used to run on to the next comment). No "//" pattern: lessc already
+    // drops // comments, and the old one only ever cut URLs
+    $css = preg_replace('/\s*\/\*.*?\*\//s', ' ', $this->css);
 
-    if (!$this->css && \preg_last_error() !== \PREG_NO_ERROR) {
+    if (null === $css) {
       throw new \Exception('Error removing comments ' . \preg_last_error() . " \n\n " . \preg_last_error_msg());
     }
 
+    $this->css = $css;
     return $this;
   }
 }

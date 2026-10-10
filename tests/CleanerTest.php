@@ -24,6 +24,12 @@ class CleanerTest extends TestCase
             'comment only' => ['/* only comment */', ' '],
             'no comment' => ['.test { color: red; }', '.test { color: red; }'],
             'empty' => ['', ''],
+            // a "//" line-comment pattern used to cut from // to the end of the line:
+            // lessc already drops // comments, so it only ever hit URLs
+            'a URL is not a comment' => ["a{background:url(https://cdn.example.com/x.png)}\nb{color:red}\n", "a{background:url(https://cdn.example.com/x.png)}\nb{color:red}\n"],
+            'an SVG data URI is not a comment' => ["a{background:url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>\")}", "a{background:url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>\")}"],
+            // an empty comment used to run on to the next */, rule b with it
+            'an empty comment ends at its own close' => ['a{}/**/b{color:red}/* x */c{}', 'a{} b{color:red} c{}'],
         ];
     }
 
@@ -46,6 +52,10 @@ class CleanerTest extends TestCase
             'whitespace only' => ["   \n\r\n   ", ''],
             'already compact' => ['.test{color:red}', '.test{color:red}'],
             'empty' => ['', ''],
+            // mb_ereg's \s took the no-break space for a space (French typography)
+            'a no-break space is kept' => ["a{content:\"x\u{00A0}y\"}", "a{content:\"x\u{00A0}y\"}"],
+            // mb_ereg returned null on invalid UTF-8: a TypeError
+            'bytes that are not UTF-8 pass through' => ["a{content:\"caf\xE9\"}  ", "a{content:\"caf\xE9\"}"],
         ];
     }
 
