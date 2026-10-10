@@ -20,7 +20,11 @@ class CssMakerErrorsTest extends InitializedMakerCase
     public static function lessMakerExceptionProvider(): array
     {
         return [
-            // no row for a font without an id: CssMaker.php:124 reads $font->id before the check (PHP warning)
+            // the id used to be read before the check: a PHP warning came first
+            'font without an id' => [
+                static fn(string $dir) => (new CssMaker())->addFont((object) ['family' => 'F', 'files' => []]),
+                'Font object is missing required property: id',
+            ],
             'font without a family' => [
                 static fn(string $dir) => (new CssMaker())->addFont((object) ['id' => 'f', 'files' => []]),
                 'Font object is missing required property: family',

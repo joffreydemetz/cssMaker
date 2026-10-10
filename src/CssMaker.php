@@ -121,14 +121,15 @@ class CssMaker
 
   public function addFont(object $font): void
   {
-    if (isset($this->fonts[$font->id])) {
-      return;
-    }
-
+    // checked before the id is read (a missing id was a PHP warning first)
     foreach (['id', 'family', 'files'] as $property) {
       if (!isset($font->$property)) {
         throw new LessMakerException('Font object is missing required property: ' . $property);
       }
+    }
+
+    if (isset($this->fonts[$font->id])) {
+      return;
     }
 
     $this->output->dump('Adding font: ' . $font->family);
@@ -205,6 +206,10 @@ class CssMaker
   {
     $this->output->step('toLess()');
 
+    // the variables file and the font themes join the list for this build only: a
+    // second process() used to merge the font themes once more per call
+    $files = $this->files;
+
     $variablesTmpFile = $this->tmpPath . \uniqid('VARIABLES_') . '.less';
     $this->dumpFile($variablesTmpFile, $this->variables->toFile());
     $this->tmpFiles[] = $variablesTmpFile;
@@ -242,6 +247,7 @@ class CssMaker
     }
 
     $this->dumpFile($lessFilePath, $less, true);
+    $this->files = $files;
     $this->output->step('OK toLess()');
   }
 
@@ -335,12 +341,19 @@ class CssMaker
 
       $this->output->dump('Minifying CSS file: ' . $this->shortenPath($cssFilePath));
 
-      $process = \Symfony\Component\Process\Process::fromShellCommandline(
-        $this->nodejsBinPath . 'minify ' . $cssFilePath . ' > ' . $minFilePath
-      );
+      // arguments, no shell redirect: a space in a path used to send the output
+      // elsewhere, and theme.min.css was never written
+      $process = new \Symfony\Component\Process\Process([
+        $this->nodejsBinPath . 'minify',
+        $cssFilePath,
+      ]);
 
       if (0 !== $process->run()) {
         throw new \Symfony\Component\Process\Exception\ProcessFailedException($process);
+      }
+
+      if (false === @\file_put_contents($minFilePath, $process->getOutput())) {
+        throw new LessMakerException('Could not write the minified CSS: ' . $minFilePath);
       }
 
       $this->output->info('Minified CSS file: ' . $this->shortenPath($minFilePath));

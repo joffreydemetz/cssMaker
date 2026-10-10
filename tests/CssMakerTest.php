@@ -220,4 +220,43 @@ class CssMakerTest extends InitializedMakerCase
 
         return $files;
     }
+
+    /**
+     * process() added the font theme to the maker's own file list: a second build
+     * (another theme) merged it twice.
+     */
+    public function testASecondBuildMergesTheFontThemeOnce(): void
+    {
+        $maker = $this->stubbedMaker();
+        $maker->addFont((object) [
+            'id' => 'test-font',
+            'family' => 'Test Font',
+            'files' => ['less' => $this->source('test-font.less', '.test-font { color: red; }')],
+        ]);
+
+        $maker->process('light');
+        $maker->process('dark');
+
+        $dark = file_get_contents($this->targetCssDir . DIRECTORY_SEPARATOR . 'dark.less');
+        $this->assertSame(file_get_contents($this->targetCssDir . DIRECTORY_SEPARATOR . 'light.less'), $dark);
+        $this->assertSame(1, substr_count($dark, '.test-font { color: red; }'));
+    }
+
+    /**
+     * minify ran through a shell with the paths unquoted: a space in the build path
+     * sent its output elsewhere and theme.min.css was never written.
+     */
+    public function testATargetPathWithASpaceIsMinified(): void
+    {
+        $target = $this->tempDir . DIRECTORY_SEPARATOR . 'build out';
+        mkdir($target . DIRECTORY_SEPARATOR . 'css', 0777, true);
+        mkdir($target . DIRECTORY_SEPARATOR . 'fonts', 0777, true);
+
+        (new CssMaker(null, Helper::stubTools($this->tempDir)))->setBuildPaths($this->tempDir, 'build out')->process('theme');
+
+        $this->assertSame(
+            '/* min */.compiled-from-theme { color: red; } /* postcss */',
+            file_get_contents($target . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'theme.min.css')
+        );
+    }
 }
