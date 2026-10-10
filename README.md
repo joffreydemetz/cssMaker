@@ -381,6 +381,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Changelog
 
+- **1.0.3** — The cleaner no longer strips `//` "comments": lessc already removes them, and the pattern cut every URL (`url(https://…)`, SVG data URIs) to the end of its line. Each `/* */` comment ends at its own close (`/**/` used to swallow the next rule); no-break spaces and non-UTF-8 bytes survive (`removeSpaces()` was a TypeError on Latin-1). `@font-face` lists woff2 before ttf. A second `process()` on one maker merges the font themes once; minify writes through a build path with spaces; a font without an id throws its own error. `trim()` replaces `mb_trim()` (PHP 8.4 only, under `php >=8.2`).
+
 - **1.0.2** — PHP >= 8.2, `jdz/data` ^2.0, Symfony ^7.4, PHPUnit 11; the cleaner also strips `//` single-line comments, and removes comments before collapsing whitespace.
 - **1.0.1** — Output goes through `jdz/output` (the bundled `Output` class is gone); test suite split per feature.
 - **1.0.0** — Initial release.
