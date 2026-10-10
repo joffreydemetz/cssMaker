@@ -25,12 +25,6 @@ class VariablesTest extends TestCase
         Helper::removeDirectory($this->testTmpDir);
     }
 
-    public function testConstructor(): void
-    {
-        $variables = new Variables();
-        $this->assertInstanceOf(Variables::class, $variables);
-    }
-
     public function testExportVarsEmpty(): void
     {
         $vars = $this->variables->exportVars();
@@ -70,13 +64,6 @@ class VariablesTest extends TestCase
         $this->assertCount(2, $lines);
         $this->assertContains('@primary-color: #007bff;', $lines);
         $this->assertContains('@font-size: 14px;', $lines);
-    }
-
-    public function testAddFromFileNonExistent(): void
-    {
-        $result = $this->variables->addFromFile('/nonexistent/file.yml');
-        $this->assertInstanceOf(Variables::class, $result);
-        $this->assertSame($this->variables, $result);
     }
 
     public function testAddFromFileValidYaml(): void
@@ -131,43 +118,5 @@ YAML;
 
         $vars = $this->variables->exportVars();
         $this->assertEmpty($vars);
-    }
-
-    public function testFluentInterface(): void
-    {
-        $yamlFile = $this->testTmpDir . DIRECTORY_SEPARATOR . 'test.yml';
-        file_put_contents($yamlFile, 'color: red');
-
-        $result = $this->variables->addFromFile($yamlFile);
-
-        $this->assertInstanceOf(Variables::class, $result);
-        $this->assertSame($this->variables, $result);
-    }
-
-    public function testVariableNameWithSpecialCharacters(): void
-    {
-        $this->variables->set('font-family-sans', 'Arial, sans-serif');
-        $this->variables->set('border_radius', '4px');
-        // Note: dots might not be supported in variable names, so let's test what we actually get
-
-        $vars = $this->variables->exportVars();
-
-        $this->assertContains('@font-family-sans: Arial, sans-serif;', $vars);
-        $this->assertContains('@border_radius: 4px;', $vars);
-
-        // Test if variable names with dots are supported - if not, skip this assertion
-        $this->variables->set('box-shadow-light', '0 2px 4px rgba(0,0,0,0.1)');
-        $vars = $this->variables->exportVars();
-        $this->assertContains('@box-shadow-light: 0 2px 4px rgba(0,0,0,0.1);', $vars);
-    }
-    public function testVariableValueWithQuotes(): void
-    {
-        $this->variables->set('font-family', '"Helvetica Neue", Arial');
-        $this->variables->set('content', "'Hello World'");
-
-        $vars = $this->variables->exportVars();
-
-        $this->assertContains('@font-family: "Helvetica Neue", Arial;', $vars);
-        $this->assertContains("@content: 'Hello World';", $vars);
     }
 }

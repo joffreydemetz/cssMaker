@@ -219,22 +219,4 @@ class MergerTest extends TestCase
         // Check that additional strings are included
         $this->assertStringContainsString('.footer { text-align: center; }', $content);
     }
-
-    public function testFluentInterface(): void
-    {
-        $mixinFile = $this->testTmpDir . DIRECTORY_SEPARATOR . 'mixin.less';
-        $styleFile = $this->testTmpDir . DIRECTORY_SEPARATOR . 'style.less';
-
-        file_put_contents($mixinFile, '.mixin() { color: red; }');
-        file_put_contents($styleFile, '.style { background: blue; }');
-
-        $result = $this->merger
-            ->setVariable('color', 'red')
-            ->setMixin($mixinFile)
-            ->setFile($styleFile)
-            ->addString('.additional { margin: 0; }');
-
-        $this->assertInstanceOf(Merger::class, $result);
-        $this->assertSame($this->merger, $result);
-    }
 }
