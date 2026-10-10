@@ -3,11 +3,10 @@
 namespace JDZ\CssMaker\Exception;
 
 use JDZ\CssMaker\Exception\LessMakerException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \JDZ\CssMaker\Exception\LessMakerException
- */
+#[CoversClass(LessMakerException::class)]
 class LessMakerExceptionTest extends TestCase
 {
     public function testConstructor(): void

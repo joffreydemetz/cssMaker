@@ -6,7 +6,7 @@ class Helper
 {
     public static function createTempStructure(string $target = 'build'): string
     {
-        $tempDir = __DIR__ . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . 'cssmaker_test_' . uniqid();
+        $tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'jdz-cssmaker-' . uniqid();
         mkdir($tempDir, 0777, true);
         mkdir($tempDir . DIRECTORY_SEPARATOR . 'tmp', 0777, true);
         mkdir($tempDir . DIRECTORY_SEPARATOR . $target, 0777, true);

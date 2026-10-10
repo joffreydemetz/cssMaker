@@ -3,11 +3,12 @@
 namespace JDZ\CssMaker\Tests;
 
 use JDZ\CssMaker\Tests\InitializedMakerCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @covers \JDZ\CssMaker\CssMaker
  * - addLessFiles
  */
+#[CoversClass(\JDZ\CssMaker\CssMaker::class)]
 class CssMakerAddLessTest extends InitializedMakerCase
 {
     public function testAddLessFiles(): void

@@ -4,15 +4,15 @@ namespace JDZ\CssMaker\Tests;
 
 use JDZ\CssMaker\Tests\InitializedMakerCase;
 use JDZ\CssMaker\CssMaker;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * Integration tests for the CssMaker library
- * 
- * @covers \JDZ\CssMaker\CssMaker
- * @covers \JDZ\CssMaker\Cleaner
- * @covers \JDZ\CssMaker\Merger
- * @covers \JDZ\CssMaker\Variables
  */
+#[CoversClass(CssMaker::class)]
+#[CoversClass(\JDZ\CssMaker\Cleaner::class)]
+#[CoversClass(\JDZ\CssMaker\Merger::class)]
+#[CoversClass(\JDZ\CssMaker\Variables::class)]
 class IntegrationTest extends InitializedMakerCase
 {
     public function testCompleteWorkflow(): void

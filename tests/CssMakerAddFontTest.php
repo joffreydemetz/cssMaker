@@ -3,11 +3,12 @@
 namespace JDZ\CssMaker\Tests;
 
 use JDZ\CssMaker\Tests\InitializedMakerCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @covers \JDZ\CssMaker\CssMaker
  * - addFont
  */
+#[CoversClass(\JDZ\CssMaker\CssMaker::class)]
 class CssMakerAddFontTest extends InitializedMakerCase
 {
     public function testAddFontWithValidFont(): void

@@ -3,12 +3,11 @@
 namespace JDZ\CssMaker\Tests;
 
 use JDZ\CssMaker\Merger;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use JDZ\CssMaker\Tests\Helper;
 
-/**
- * @covers \JDZ\CssMaker\Merger
- */
+#[CoversClass(Merger::class)]
 class MergerTest extends TestCase
 {
     private Merger $merger;

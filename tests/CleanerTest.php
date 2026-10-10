@@ -3,11 +3,10 @@
 namespace JDZ\CssMaker\Tests;
 
 use JDZ\CssMaker\Cleaner;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \JDZ\CssMaker\Cleaner
- */
+#[CoversClass(Cleaner::class)]
 class CleanerTest extends TestCase
 {
     public function testConstructor(): void

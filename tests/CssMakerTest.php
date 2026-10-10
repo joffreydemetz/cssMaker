@@ -3,12 +3,11 @@
 namespace JDZ\CssMaker\Tests;
 
 use JDZ\CssMaker\CssMaker;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use JDZ\CssMaker\Tests\Helper;
 
-/**
- * @covers \JDZ\CssMaker\CssMaker
- */
+#[CoversClass(CssMaker::class)]
 class CssMakerTest extends TestCase
 {
     public function testConstructor(): void
